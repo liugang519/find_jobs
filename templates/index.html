@@ -5,20 +5,8 @@
     <meta charset="utf-8">
     <title>FJobs!首页</title>
     <!-- Bootstrap core CSS -->
-    <link href="../static/css/bootstrap.css" rel="stylesheet">
-    <style type="text/css">
-    .nav-bottom-parent {
-        position: relative;
-    }
-    .nav-bottom-child {
-        position: absolute;
-        right: 20%;
-        bottom: 7%;
-    }
-    .post-time {
-        float: right;
-    }
-    </style>
+    <link href="../static/css/bootstrap.css" rel="stylesheet" type="text/css">
+    <link href="../static/css/custom.css" rel="stylesheet" type="text/css" >
 </head>
 
 <body>
@@ -142,8 +130,8 @@
                         </div>
                         <!-- List group -->
                         <div class="list-group">
-                            {% for item in index_list %}
-                            <a href="#" class="list-group-item">{{ item }}</a>
+                            {% for job in jobs_list %}
+                            <a href="{{ url_job }}" class="list-group-item">{{ job[title] }}<span class="post-time">{{ job[time] }}</span></a>
                             <!-- <a href="#" class="list-group-item">links1</a>
                             <a href="#" class="list-group-item">links2</a>
                             <a href="#" class="list-group-item">links3</a>
@@ -171,9 +159,9 @@
                     <div class="col-md-4"></div>
                     <div class="col-md-4">
                         <ul class="pager">
-                            <li><a href="{{url_pre}}">上一页</a>
+                            <li><a href="{{ url_pre }}">上一页</a>
                             </li>
-                            <li><a href="{{url_next}}">下一页</a>
+                            <li><a href="{{ url_next }}">下一页</a>
                             </li>
                         </ul>
                     </div>
