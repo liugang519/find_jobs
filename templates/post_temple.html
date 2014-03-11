@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>FJobs!信息</title>
+    <!-- Bootstrap core CSS -->
+    <link href="../static/css/bootstrap.css" rel="stylesheet" type="text/css">
+    <link href="../static/css/custom.css" rel="stylesheet" type="text/css" >
+</head>
+
+<body>
+    <!-- head logo nav part begin -->
+    <div id="head" class="container">
+        <div class="row nav-bottom-parent">
+            <div class="col-md-2"></div>
+            <div class="col-md-6">
+                <img src="../static/img/fjobs_logo.png" class="img-responsive center-block" alt="Responsive image">
+            </div>
+            <div class="col-md-2 nav-bottom-child">
+                <ul class="nav nav-pills">
+                    <li class="active"><a href="#">首页</a>
+                    </li>
+                    <li><a href="#">关于</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="col-md-2"></div>
+        </div>
+    </div>
+
+    <!-- body part begin -->
+    <div id="body" class="container">
+        <hr class="featurette-divider">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">发布信息概要</h3>
+                    </div>
+                    <div class="panel-body">
+                        <form class="form-horizontal" role="form">
+                            <div class="form-group">
+                                <label for="author" class="col-sm-3 control-label">作者</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control" id="author" value="{{ job[author] }}" >
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="company" class="col-sm-3 control-label">公司</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control" id="company" value="百度" disabled>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="post-time" class="col-sm-3 control-label">时间</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control" id="post-time" value="{{ job[time] }}" >
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="email" class="col-sm-3 control-label">邮箱</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control" id="email" value="chenmi122@baidu.com" >
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="position" class="col-sm-3 control-label">职位</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control" id="position" value="算法工程师" >
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-8" id="article-list">
+                <div class="row">
+                    <div class="panel panel-default">
+                        <!-- Default panel contents -->
+                        <div class="panel-heading" style="font-weight: bold">{{ job[title] }}</div>
+                        <div class="panel-body">
+                            <p>{{ job[content] }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <!-- footer begin! -->
+    <div class="container">
+        <hr class="featurette-divider">
+        <div class="footer center-block">
+            <p style="text-align:center;">&copy; 玫玫 &middot; 刘刘</p>
+        </div>
+    </div>
+
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="../static/js/jquery-1.11.0.js"></script>
+    <script src="../static/js/bootstrap.min.js"></script>
+</body>
+
+</html>
