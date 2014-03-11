@@ -1,0 +1,38 @@
+/*
+custom css file
+for use in find_jobs
+
+author: mm
+ */
+ .nav-bottom-parent {
+    position: relative;
+}
+.nav-bottom-child {
+    position: absolute;
+    right: 20%;
+    bottom: 2%;
+}
+.post-time {
+    float: right;
+}
+.nav-mm {
+    background-color: #003366;
+    border: 2px solid #003366;
+    border-radius: 10px;
+    width: 10em;
+    padding: 0.5em;
+    font-size: 1.5em;
+    font-weight: bold;
+    text-align: center;
+}
+.nav-mm li {
+    display: inline;
+    margin: 0.5em;
+}
+.nav-mm li > a {
+    color: #E5E4E2;
+    text-decoration: none;
+}
+.nav-mm li.active > a {
+	color: #FFFFFF;
+}
