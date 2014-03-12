@@ -4,13 +4,10 @@ for use in find_jobs
 
 author: mm
  */
- .nav-bottom-parent {
+ .nav-bottom-child {
     position: relative;
-}
-.nav-bottom-child {
-    position: absolute;
-    right: 20%;
-    bottom: 2%;
+    top: 190px;
+    left: 0px;
 }
 .post-time {
     float: right;
@@ -34,5 +31,5 @@ author: mm
     text-decoration: none;
 }
 .nav-mm li.active > a {
-	color: #FFFFFF;
+    color: #FFFFFF;
 }
