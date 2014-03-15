@@ -23,17 +23,16 @@ class MainHandler(tornado.web.RequestHandler):
         id_list = rs.zrevrange("index_time_sset", 1, -1)
         jobs_list = []
         if p == "none":
-            for id in xrange(INDEX_NUMBER):
-                jobs_list.append(rs.hgetall("article:ParttimeJob:"+id))
+            p = 1
         else:
             p = int(p)
-            start = (p-1)*INDEX_NUMBER+1
-            if start > len(id_list):
-                raise tornado.web.HTTPError(404)
-            else:
-                end = min(start+INDEX_NUMBER-1, len(id_list))
-                for id in xrange(start-1,end):
-                    jobs_list.append(rs.hgetall("article:ParttimeJob:"+id))
+        start = (p-1)*INDEX_NUMBER+1
+        if p < 1 or start > len(id_list):
+            raise tornado.web.HTTPError(404)
+        else:
+            end = min(start+INDEX_NUMBER-1, len(id_list))
+            for i in xrange(start-1,end):
+                jobs_list.append(rs.hgetall("article:ParttimeJob:"+id_list[i]))
         url_pre = ""
         url_next = ""
         if p-1 >= 1:
