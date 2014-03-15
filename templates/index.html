@@ -11,24 +11,7 @@
 
 <body>
     <!-- head logo nav part begin -->
-    <div id="head" class="container">
-        <div class="row">
-            <div class="col-md-2"></div>
-            <div class="col-md-6">
-                <img src="../static/img/fjobs_logo.png" class="img-responsive center-block" alt="Responsive image">
-            </div>
-            <div class="col-md-2 nav-bottom-child">
-                <ul class="nav-mm">
-                    <li class="active"><a href="#" >首页</a>
-                    </li>
-                    <li><a href="#">关于我们</a>
-                    </li>
-                </ul>
-            </div>
-            <div class="col-md-2"></div>
-        </div>
-    </div>
-
+    {% block header %}{% end %}
     <!-- body part begin -->
     <div id="body" class="container">
         <hr class="featurette-divider">
@@ -131,7 +114,7 @@
                         <!-- List group -->
                         <div class="list-group">
                             {% for job in jobs_list %}
-                            <a href="{{ url_job }}" class="list-group-item" target="_blank">{{ job[title] }}<span class="post-time">{{ job[time] }}</span></a>
+                            <a href="{{ "/"+job["category"]+"/"+job["id"] }}" class="list-group-item" target="_blank">{{ job["title"] }}<span class="post-time">{{ job["time"] }}</span></a>
                             <!-- <a href="#" class="list-group-item">links1</a>
                             <a href="#" class="list-group-item">links2</a>
                             <a href="#" class="list-group-item">links3</a>
