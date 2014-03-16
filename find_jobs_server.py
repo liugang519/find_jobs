@@ -11,6 +11,7 @@ import redis
 
 from tornado.options import define, options
 from spider_conf import *
+from server_conf import * 
 
 define("port", default=8888, help="run on the given port", type=int)
 
@@ -20,8 +21,8 @@ class MainHandler(tornado.web.RequestHandler):
         rs = redis.Redis(host=REDIS_HOST, port=REDIS_PORT, db=REDIS_DB)
         id_list = rs.zrevrange("index_time_sset", 1, -1)
         jobs_list = []
-        p = self.get_argument("p","none")
-        if p == "none":
+        p = self.get_argument("p", None)
+        if p is None:
             p = 1
         else:
             p = int(p)
