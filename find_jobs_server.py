@@ -40,7 +40,7 @@ class MainHandler(tornado.web.RequestHandler):
         if (p*INDEX_NUMBER+1) <= len(id_list):
             url_next = "/?p="+str(p+1)
         
-        self.render("index.html", jobs_list=jobs_list, url_pre=url_pre, url_next=url_next)
+        self.render("index.html", jobs_list=jobs_list, url_pre=url_pre, url_next=url_next, page_title="Find Jobs")
           
 class ParttimeJobHandler(tornado.web.RedirectHandler):
     """ /article/$category/$id
@@ -51,7 +51,7 @@ class ParttimeJobHandler(tornado.web.RedirectHandler):
         if job is None:
             self.write(u"您请求的页面不存在")
         else:
-            self.render("post_temple.html", job=job)
+            self.render("post_temple.html", job=job, page_title="Job Details")
 def main():
     tornado.options.parse_command_line()
     application = tornado.web.Application(
