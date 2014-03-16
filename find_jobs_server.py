@@ -42,7 +42,7 @@ class MainHandler(tornado.web.RequestHandler):
         
         self.render("index.html", jobs_list=jobs_list, url_pre=url_pre, url_next=url_next, page_title="Find Jobs")
           
-class ParttimeJobHandler(tornado.web.RedirectHandler):
+class ParttimeJobHandler(tornado.web.RequestHandler):
     """ /article/$category/$id
     """
     def get(self, id):
@@ -55,7 +55,10 @@ class ParttimeJobHandler(tornado.web.RedirectHandler):
 def main():
     tornado.options.parse_command_line()
     application = tornado.web.Application(
-            handlers=[(r"/", MainHandler), (r"/article/ParttimeJob/(\d+)", ParttimeJobHandler),],
+            handlers=[
+                (r"/", MainHandler), 
+                (r"/article/ParttimeJob/(\d+)", ParttimeJobHandler)
+                ],
             template_path=os.path.join(os.path.dirname(__file__), "templates"),
             static_path=os.path.join(os.path.dirname(__file__), "static"),
             )
