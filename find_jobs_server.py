@@ -41,17 +41,27 @@ class MainHandler(tornado.web.RequestHandler):
             url_next = "/?p="+str(p+1)
         
         self.render("index.html", jobs_list=jobs_list, url_pre=url_pre, url_next=url_next)
-            
+          
+class ParttimeJobHandler(tornado.web.RedirectHandler):
+    """ /article/$category/$id
+    """
+    def get(self, id):
+        rs = redis.Redis(host=REDIS_HOST, port=REDIS_PORT, db=REDIS_DB)
+        job = rs.hgetall("article:ParttimeJob:"+id)
+        if job is None:
+            self.write(u"您请求的页面不存在")
+        else:
+            self.render("post_temple.html", job=job)
 def main():
     tornado.options.parse_command_line()
     application = tornado.web.Application(
-            handlers=[(r"/", MainHandler),],
+            handlers=[(r"/", MainHandler), (r"/article/Parttime/(\d+)", ParttimeJobHandler),],
             template_path=os.path.join(os.path.dirname(__file__), "templates"),
             static_path=os.path.join(os.path.dirname(__file__), "static"),
             )
 
     http_server = tornado.httpserver.HTTPServer(application)
-    http_server.listen(options.port, address="10.103.241.2")
+    http_server.listen(options.port)
     tornado.ioloop.IOLoop.instance().start()
 
 if __name__ == "__main__":
