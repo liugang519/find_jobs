@@ -11,6 +11,7 @@ import redis
 
 from tornado.options import define, options
 from spider_conf import *
+from server_conf import * 
 
 define("port", default=8888, help="run on the given port", type=int)
 
