@@ -18,15 +18,29 @@ class MainHandler(tornado.web.RequestHandler):
     def get(self):
 #        self.write("Hello, word")
         rs = redis.Redis(host=REDIS_HOST, port=REDIS_PORT, db=REDIS_DB)
-        id_list = rs.smembers("article:ParttimeJob:id:set")
-        index_list = []
-        c = 0
-        for id in id_list:
-            index_list.append(rs.hget("article:ParttimeJob:"+id, "title"))
-            c += 1
-            if c == 15:
-                break
-        self.render("index.html", index_list=index_list)       
+        id_list = rs.zrevrange("index_time_sset", 1, -1)
+        jobs_list = []
+        p = self.get_argument("p","none")
+        if p == "none":
+            p = 1
+        else:
+            p = int(p)
+        start = (p-1)*INDEX_NUMBER+1
+        if p < 1 or start > len(id_list):
+            raise tornado.web.HTTPError(404)
+        else:
+            end = min(start+INDEX_NUMBER-1, len(id_list))
+            for i in xrange(start-1,end):
+                jobs_list.append(rs.hgetall("article:ParttimeJob:"+id_list[i]))
+        url_pre = ""
+        url_next = ""
+        if p-1 >= 1:
+            url_pre = "/?p="+str(p-1)
+        if (p*INDEX_NUMBER+1) <= len(id_list):
+            url_next = "/?p="+str(p+1)
+        
+        self.render("index.html", jobs_list=jobs_list, url_pre=url_pre, url_next=url_next)
+            
 def main():
     tornado.options.parse_command_line()
     application = tornado.web.Application(
