@@ -5,6 +5,12 @@ for use in find_jobs
 author: mm
  */
 $(document).ready(function() {
-    if ($("ul.pager a").attr("href") == "")
-        $("ul.pager > li").addClass("disabled");
+    if (document.title == "Find Jobs")
+        $("li#home").addClass("active");
+
+    if ($("#page_up > a").attr("href") == "")
+        $("#page_up").addClass("disabled");
+
+    if ($("#page_down > a").attr("href") == "")
+        $("#page_down").addClass("disabled");
 });

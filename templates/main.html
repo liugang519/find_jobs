@@ -5,8 +5,8 @@
     <meta charset="utf-8">
     <title>{{ page_title }}</title>
     <!-- Bootstrap core CSS -->
-    <link href="{{ static_url("css/bootstrap.css") }}" rel="stylesheet" type="text/css">
-    <link href="{{ static_url("css/custom.css") }}" rel="stylesheet" type="text/css">
+    <link href="{{ static_url('css/bootstrap.css') }}" rel="stylesheet" type="text/css">
+    <link href="{{ static_url('css/custom.css') }}" rel="stylesheet" type="text/css">
 </head>
 
 <body>
@@ -15,13 +15,13 @@
         <div class="row">
             <div class="col-md-2"></div>
             <div class="col-md-6">
-                <img src="../static/img/fjobs_logo.png" class="img-responsive center-block" alt="Responsive image">
+                <img src="{{ static_url('img/fjobs_logo.png' }}" class="img-responsive center-block" alt="Responsive image">
             </div>
             <div class="col-md-2 nav-bottom-child">
                 <ul class="nav-mm">
-                    <li class="active"><a href="#">首页</a>
+                    <li id="home"><a href="#">首页</a>
                     </li>
-                    <li><a href="#">关于我们</a>
+                    <li id="about"><a href="#">关于我们</a>
                     </li>
                 </ul>
             </div>
@@ -40,9 +40,9 @@
     <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
-    <script src="{{ static_url("js/jquery-1.11.0.js") }}"></script>
-    <script src="{{ static_url("js/bootstrap.js") }}"></script>
-    <script src="{{ static_url("js/custom.js") }}"></script>
+    <script src="{{ static_url('js/jquery-1.11.0.js') }}"></script>
+    <script src="{{ static_url('js/bootstrap.js') }}"></script>
+    <script src="{{ static_url('js/custom.js') }}"></script>
 </body>
 
 </html>

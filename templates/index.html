@@ -1,7 +1,4 @@
-{% extends "main.html" %} 
-
-
-{% block body %}
+{% extends "main.html" %} {% block body %}
 <div id="body" class="container">
     <hr class="featurette-divider">
     <div class="row">
@@ -112,9 +109,9 @@
                 <div class="col-md-4"></div>
                 <div class="col-md-4">
                     <ul class="pager">
-                        <li><a href="{{ url_pre }}">上一页</a>
+                        <li id="page_up"><a href="{{ url_pre }}">上一页</a>
                         </li>
-                        <li><a href="{{ url_next }}">下一页</a>
+                        <li id="page_down"><a href="{{ url_next }}">下一页</a>
                         </li>
                     </ul>
                 </div>
