@@ -15,7 +15,7 @@
                         <div class="form-group">
                             <label for="author" class="col-sm-3 control-label">作者</label>
                             <div class="col-sm-9">
-                                <input type="text" class="form-control" id="author" value="{{ job[author] }}">
+                                <input type="text" class="form-control" id="author" value="{{ job['author'] }}">
                             </div>
                         </div>
                         <div class="form-group">
@@ -27,7 +27,7 @@
                         <div class="form-group">
                             <label for="post-time" class="col-sm-3 control-label">时间</label>
                             <div class="col-sm-9">
-                                <input type="text" class="form-control" id="post-time" value="{{ job[time] }}">
+                                <input type="text" class="form-control" id="post-time" value="{{ job['time'] }}">
                             </div>
                         </div>
                         <div class="form-group">
@@ -52,9 +52,9 @@
             <div class="row">
                 <div class="panel panel-default">
                     <!-- Default panel contents -->
-                    <div class="panel-heading" style="font-weight: bold">{{ job[title] }}</div>
+                    <div class="panel-heading" style="font-weight: bold">{{ job['title'] }}</div>
                     <div class="panel-body">
-                        <p>{{ job[content] }}</p>
+                        <p>{{ job['content'] }}</p>
                     </div>
                 </div>
             </div>
