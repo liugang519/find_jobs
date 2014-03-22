@@ -102,7 +102,7 @@
                     <!-- List group -->
                     <div class="list-group">
                         {% for job in jobs_list %}
-                        <a href="{{ '/article/'+job['category']+'/'+job['id'] }}" class="list-group-item">{{ job['title'] }}<span class="post-time">{{ job['time'] }}</span></a>
+                        <a href="{{ '/article/'+job['category']+'/'+job['id'] }}" class="list-group-item"><span>{{ job['title'] }}</span><span class="post-time">{{ job['time'] }}</span></a>
                         {% end %}
                     </div>
                 </div>
