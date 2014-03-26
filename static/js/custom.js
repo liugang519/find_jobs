@@ -16,7 +16,7 @@ $(document).ready(function() {
     } // delete "主题：" in title
 
     function delete_home_list_title(obj_list) {
-        obj_list.children().each(function() {
+        obj_list.children("a").each(function(index) {
             delete_useless_title($(this).children().first());
         });
     } // look into all the list, delete "主题：" in title
@@ -36,9 +36,8 @@ $(document).ready(function() {
         var company_list = ["百度", "阿里", "腾讯", "新浪", "去哪儿"];
         var title = obj_title.text();
         var flag_match = false;
-        console.info("%s", title);
+        // console.info("%s", title);
         for (var i = 0; i < company_list.length; i++) {
-            console.info("%s", company_list[i]);
             if (title.match(company_list[i]) != null) {
                 obj_input.attr("value", company_list[i]);
                 flag_match = true;
@@ -47,10 +46,28 @@ $(document).ready(function() {
         }
         if (flag_match == false)
             obj_input.attr("value", "未提供");
+    } // match the email and write to left board
+
+    function set_timer(obj_timer) {
+        function checkTime(i) {
+            if (i < 10)
+                i = "0" + i;
+            return i
+        }
+        var today = new Date();
+        var h = today.getHours();
+        var m = today.getMinutes();
+        var s = today.getSeconds();
+        // add a zero in front of numbers<10
+        m = checkTime(m);
+        s = checkTime(s);
+        obj_timer.text(h + ":" + m + ":" + s);
+        t = setTimeout(set_timer, 500, obj_timer);
     }
 
     if (document.title == "Find Jobs") {
-        $("#home").addClass("active");
+
+        $("#tab_intern").addClass("active");
 
         if ($("#page_up > a").attr("href") == "")
             $("#page_up").addClass("disabled");
@@ -59,10 +76,15 @@ $(document).ready(function() {
             $("#page_down").addClass("disabled");
 
         delete_home_list_title($("div.list-group"));
+        set_timer($("p#timer"));
     }
 
-
     if (document.title == "Job Details") {
+
+        $("#infoTab").click(function(event) {
+            window.location.href = 'http://localhost:8888/'
+        });
+
         var pannel_body = $("div.panel-body > p");
         var pannel_title = $("h3#article-title");
 

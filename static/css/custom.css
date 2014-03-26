@@ -4,27 +4,44 @@ for use in find_jobs
 
 author: mm
  */
- .nav {
+ body {
+    padding-top: 10px;
+}
+a {
+    color: #0066cc;
+}
+.nav {
     font-size: 18px;
-    line-height: 2em;
-    width: 80%;
+    font-weight: bold;
+    line-height: 1.5em;
+    width: 30%;
+}
+.navbar-inverse {
+    background-color: #333333;
 }
 .nav-bottom-child {
     position: relative;
-    top: 190px;
-    left: 0px;
+    top: 80px;
+}
+div#search-panel {
+    margin-bottom: 20px;
+}
+p#timer {
+    text-align: center;
+    font-size: 30px;
+    font-weight: bold;
+    letter-spacing: 2px;
+    margin: 0;
+}
+div.tab-content {
+    padding-left: 15px;
+    padding-right: 15px;
+}
+div.list-group > li {
+    font-size: 16px;
+    font-weight: bold;
 }
 .post-time {
     float: right;
-    color: #428bca;
-}
-.nav-mm {
-    width: 10em;
-    padding: 0.5em;
-    font-size: 1.5em;
-    font-weight: bold;
-    text-align: center;
-}
-div.panel-body > p {
-    line-height: 2em;
+    color: #0066cc;
 }

@@ -1,11 +1,38 @@
-{% extends "main.html" %} 
-
-{% block body %}
+{% extends "main.html" %} {% block body %}
 <div id="body" class="container">
     <hr class="featurette-divider">
     <div class="row">
-        <div class="col-md-4">
-            <div class="panel panel-default">
+        <div class="col-md-3">
+
+            <div id="search-panel">
+                <div class="input-group">
+                    <input type="text" class="form-control">
+                    <span class="input-group-btn">
+                        <button class="btn btn-default" type="button">
+                            <span class="glyphicon glyphicon-search"></span>
+                        </button>
+                    </span>
+                </div>
+                <!-- /input-group -->
+            </div>
+
+            <div id="time-panel">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <p id="timer"></p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="weather-panel">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <p>It is a beautiful day to find a job and earn it!</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- <div class="panel panel-default">
                 <div class="panel-heading">
                     <h3 class="panel-title">“层层”过滤器</h3>
                 </div>
@@ -55,6 +82,7 @@
                     </form>
                 </div>
             </div>
+            
             <div class="panel panel-default">
                 <div class="panel-heading">
                     <h3 class="panel-title">“词词”过滤器</h3>
@@ -88,22 +116,29 @@
                         </p>
                     </div>
                 </div>
-            </div>
+            </div>-->
         </div>
-        <div class="col-md-8" id="article-list">
+
+        <div class="col-md-9" id="article-list">
             <div class="row">
-                <div class="panel panel-default">
-                    <!-- Default panel contents -->
-                    <div class="panel-heading">
-                        <h4>标题
-                            <span class="post-time">发布时间</span>
-                        </h4>
+                <div class="tab-content">
+                    <div class="tab-pane fade in active" id="intern">
+                        <div class="list-group">
+
+                            <li class="list-group-item">
+                                <span>主题</span>
+                                <span class="post-time">时间</span>
+                            </li>
+
+                            {% for job in jobs_list %}
+                            <a href="{{ '/article/'+job['category']+'/'+job['id'] }}" class="list-group-item">
+                                <span>{{ job['title'] }}</span>
+                                <span class="post-time">{{ job['time'] }}</span>
+                            </a>
+                            {% end %}
+                        </div>
                     </div>
-                    <!-- List group -->
-                    <div class="list-group">
-                        {% for job in jobs_list %}
-                        <a href="{{ '/article/'+job['category']+'/'+job['id'] }}" class="list-group-item"><span>{{ job['title'] }}</span><span class="post-time">{{ job['time'] }}</span></a>
-                        {% end %}
+                    <div class="tab-pane fade" id="employee">
                     </div>
                 </div>
             </div>
