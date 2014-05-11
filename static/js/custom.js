@@ -65,6 +65,15 @@ $(document).ready(function() {
         t = setTimeout(set_timer, 500, obj_timer);
     }
 
+    function set_weather(obj_weather) {
+        $.getJSON('http://api.openweathermap.org/data/2.5/weather?q=beijing,china&lang=zh_cn', function(data) {
+            //处理data数据
+            var kelvin_tem = 273.15; //Temperature in Kelvin
+            var temperature = data.main.temp - kelvin_tem;
+            obj_weather.text("今日：" + temperature.toFixed(0) + "°C | " + data.weather[0].description);
+        });
+    }
+
     if (document.title == "Find Jobs") {
 
         $("#tab_intern").addClass("active");
@@ -77,6 +86,7 @@ $(document).ready(function() {
 
         delete_home_list_title($("div.list-group"));
         set_timer($("p#timer"));
+        set_weather($("p#weather"));
     }
 
     if (document.title == "Job Details") {
@@ -93,7 +103,4 @@ $(document).ready(function() {
         delete_useless_title(pannel_title);
         take_company(pannel_title, $("input#company"));
     }
-
-
-
 });
