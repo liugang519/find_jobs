@@ -104,7 +104,7 @@ def crawler(host=HOST,href=HREF,first=FIRST):
                         rs.zadd("index:time:sset:"+info_dict["category"], info_dict["id"], article_time)
                         #reverse:index:$keyword:id:set
                         keywords = rs.smembers("keyword:set")
-                        for wd in keywords
+                        for wd in keywords:
                             wd = wd.decode("utf-8")
                             if wd in info_dict["title"]:
                                 rs.zadd("reverse:index:"+wd+":id:set", info_dict["id"])
