@@ -60,7 +60,6 @@ def crawler(host=HOST,href=HREF,first=FIRST):
     for wd in KEY_WORDS:
         rs.sadd("keyword:set", wd)
 
-    return
     while(True):
         for page in xrange(pages):
             index_url = host+href+"?p="+str(page)
