@@ -4,6 +4,7 @@
 import time
 import re
 import hashlib
+import sys
 
 import bs4
 import requests
@@ -61,7 +62,7 @@ def crawler(host=HOST,href=HREF,first=FIRST):
         rs.sadd("keyword:set", wd)
 
     while(True):
-        for page in xrange(pages):
+        for page in xrange(1,pages+1):
             index_url = host+href+"?p="+str(page)
             print "Parsing Index:",index_url
             try:
@@ -133,7 +134,10 @@ def test():
 #    crawler()
 
 def main():
-    crawler()
+    if len(sys.argv) > 1:
+        crawler(href=sys.argv[1])
+    else:
+        crawler()
 
 if __name__ == "__main__":
     main()
