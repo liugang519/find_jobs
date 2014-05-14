@@ -106,7 +106,7 @@ def crawler(host=HOST,href=HREF,first=FIRST):
                         for wd in keywords:
                             wd = wd.decode("utf-8")
                             if wd in info_dict["title"]:
-                                rs.zadd("reverse:index:"+wd+":id:set", info_dict["id"])
+                                rs.sadd("reverse:index:"+wd+":id:set", info_dict["id"])
                         print "ADD"
                 except Exception, e:
                     print "REDIS ERROR"
