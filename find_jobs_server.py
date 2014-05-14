@@ -56,11 +56,11 @@ def main():
     tornado.options.parse_command_line()
     application = tornado.web.Application(
             handlers=[
-                (r"/", MainHandler), 
-                (r"/article/ParttimeJob/(\d+)", ParttimeJobHandler)
-                ],
+                (r"/", MainHandler),
+                (r"/article/ParttimeJob/(\d+)", ParttimeJobHandler),],
             template_path=os.path.join(os.path.dirname(__file__), "templates"),
             static_path=os.path.join(os.path.dirname(__file__), "static"),
+            debug=True,
             )
 
     http_server = tornado.httpserver.HTTPServer(application)
