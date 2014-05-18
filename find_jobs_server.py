@@ -31,7 +31,7 @@ class MainHandler(tornado.web.RequestHandler):
             if len(jobinfo_list) == INDEX_NUMBER:
                 break
         for id in parttimejob_id_list:
-            partimejob = rs.hgetall("article:ParttimeJob"+id)
+            partimejob = rs.hgetall("article:ParttimeJob:"+id)
             parttimejob_list.append(partimejob)
             if len(parttimejob_list) == INDEX_NUMBER:
                 break
@@ -42,6 +42,7 @@ class DetailsInfoHandler(tornado.web.RequestHandler):
     """
     def get(self, category, id):
         rs = redis.Redis(host=REDIS_HOST, port=REDIS_PORT, db=REDIS_DB)
+        url = self.request.uri
         detailsInfo = rs.hgetall("article:"+category+":"+id)
         if detailsInfo is None:
             self.write(u"您请求的页面不存在")
@@ -59,6 +60,7 @@ class IndexHandler(tornado.web.RequestHandler):
         if category is None or page is None:
             self.write({"status":"error"})
         else:
+            page = int(page)
             id_list = rs.zrevrange("index:time:sset:"+category, 1, -1)
             if len(id_list) <= (page-1)*INDEX_NUMBER:
                 self.write({"status":"error"})
@@ -70,13 +72,13 @@ class IndexHandler(tornado.web.RequestHandler):
                     if len(details_list) == INDEX_NUMBER:
                         break
                 self.write(details_list)
-                
+
 def main():
     tornado.options.parse_command_line()
     application = tornado.web.Application(
             handlers=[
                 (r"/", MainHandler),
-                (r"/article/(\w)+/(\d+)", ParttimeJobHandler),
+                (r"/article/(\w)+/(\d+)", DetailsInfoHandler),
                 (r"/index", IndexHandler),],
             template_path=os.path.join(os.path.dirname(__file__), "templates"),
             static_path=os.path.join(os.path.dirname(__file__), "static"),
