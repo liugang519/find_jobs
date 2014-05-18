@@ -17,49 +17,67 @@ from ui_modules import *
 define("port", default=8888, help="run on the given port", type=int)
 
 class MainHandler(tornado.web.RequestHandler):
+    """ the index.html
+    """
     def get(self):
-#        self.write("Hello, word")
         rs = redis.Redis(host=REDIS_HOST, port=REDIS_PORT, db=REDIS_DB)
-        id_list = rs.zrevrange("index_time_sset", 1, -1)
-        jobs_list = []
-        p = self.get_argument("p", None)
-        if p is None:
-            p = 1
-        else:
-            p = int(p)
-        start = (p-1)*INDEX_NUMBER+1
-        if p < 1 or start > len(id_list):
-            raise tornado.web.HTTPError(404)
-        else:
-            end = min(start+INDEX_NUMBER-1, len(id_list))
-            for i in xrange(start-1,end):
-                jobs_list.append(rs.hgetall("article:ParttimeJob:"+id_list[i]))
-        url_pre = ""
-        url_next = ""
-        if p-1 >= 1:
-            url_pre = "/?p="+str(p-1)
-        if (p*INDEX_NUMBER+1) <= len(id_list):
-            url_next = "/?p="+str(p+1)
-        
-        self.render("index.html", jobs_list=jobs_list, url_pre=url_pre, url_next=url_next, page_title="Find Jobs")
+        jobinfo_id_list = rs.zrevrange("index:time:sset:JobInfo", 1, -1)
+        parttimejob_id_list = rs.zrevrange("index:time:sset:ParttimeJob", 1, -1)
+        jobinfo_list = []
+        parttimejob_list = []
+        for id in jobinfo_id_list:
+            jobinfo = rs.hgetall("article:JobInfo:"+id)
+            jobinfo_list.append(jobinfo)
+            if len(jobinfo_list) == INDEX_NUMBER:
+                break
+        for id in parttimejob_id_list:
+            partimejob = rs.hgetall("article:ParttimeJob"+id)
+            parttimejob_list.append(partimejob)
+            if len(parttimejob_list) == INDEX_NUMBER:
+                break
+        self.render("index.html", jobinfo_list = jobinfo_list, parttimejob_list=parttimejob_list)
           
-class ParttimeJobHandler(tornado.web.RequestHandler):
+class DetailsInfoHandler(tornado.web.RequestHandler):
     """ /article/$category/$id
     """
-    def get(self, id):
+    def get(self, category, id):
         rs = redis.Redis(host=REDIS_HOST, port=REDIS_PORT, db=REDIS_DB)
-        job = rs.hgetall("article:ParttimeJob:"+id)
-        if job is None:
+        detailsInfo = rs.hgetall("article:"+category+":"+id)
+        if detailsInfo is None:
             self.write(u"您请求的页面不存在")
         else:
-            self.render("post.html", job=job, page_title="Job Details")
+            self.render("post.html", job = detailsInfo)
 
+class IndexHandler(tornado.web.RequestHandler):
+    """ ajax index 
+    """
+    def get(self):
+        rs = redis.Redis(host=REDIS_HOST, port=REDIS_PORT, db=REDIS_DB)
+        category = self.get_argument("category", None)
+        page = self.get_argument("page", None)
+
+        if category is None or page is None:
+            self.write({"status":"error"})
+        else:
+            id_list = rs.zrevrange("index:time:sset:"+category, 1, -1)
+            if len(id_list) <= (page-1)*INDEX_NUMBER:
+                self.write({"status":"error"})
+            else:
+                details_list = []
+                for i in xrange((page-1)*INDEX_NUMBER):
+                    details = rs.hgetall("article:"+category+":"+id_list[i])
+                    details_list.append(details)
+                    if len(details_list) == INDEX_NUMBER:
+                        break
+                self.write(details_list)
+                
 def main():
     tornado.options.parse_command_line()
     application = tornado.web.Application(
             handlers=[
                 (r"/", MainHandler),
-                (r"/article/ParttimeJob/(\d+)", ParttimeJobHandler),],
+                (r"/article/(\w)+/(\d+)", ParttimeJobHandler),
+                (r"/index", IndexHandler),],
             template_path=os.path.join(os.path.dirname(__file__), "templates"),
             static_path=os.path.join(os.path.dirname(__file__), "static"),
             ui_modules=ui_module_components,
