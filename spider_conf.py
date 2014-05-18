@@ -8,9 +8,6 @@ HOST="http://m.byr.cn"
 HREF="/board/ParttimeJob"
 #HREF="/board/JobInfo"
 
-#赚取信息的版块标签
-CATEGORY="ParttimeJob"
-
 #是否是第一次启动
 FIRST=True
 
