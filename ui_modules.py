@@ -12,4 +12,4 @@ class FooterModule(tornado.web.UIModule):
         return self.render_string("footer.html")
 
 ui_module_components = {"Header": HeaderModule,
-              "Footer": FooterModule}
+                        "Footer": FooterModule}
