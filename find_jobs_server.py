@@ -12,6 +12,7 @@ import redis
 from tornado.options import define, options
 from spider_conf import *
 from server_conf import * 
+from ui_modules import *
 
 define("port", default=8888, help="run on the given port", type=int)
 
@@ -51,7 +52,8 @@ class ParttimeJobHandler(tornado.web.RequestHandler):
         if job is None:
             self.write(u"您请求的页面不存在")
         else:
-            self.render("post_temple.html", job=job, page_title="Job Details")
+            self.render("post.html", job=job, page_title="Job Details")
+
 def main():
     tornado.options.parse_command_line()
     application = tornado.web.Application(
@@ -60,6 +62,8 @@ def main():
                 (r"/article/ParttimeJob/(\d+)", ParttimeJobHandler),],
             template_path=os.path.join(os.path.dirname(__file__), "templates"),
             static_path=os.path.join(os.path.dirname(__file__), "static"),
+            ui_modules={"Header": HeaderModule,
+                        "Footer": FooterModule},
             debug=True,
             )
 
