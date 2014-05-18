@@ -37,14 +37,23 @@ class MainHandler(tornado.web.RequestHandler):
                 break
         self.render("index.html", jobinfo_list = jobinfo_list, parttimejob_list=parttimejob_list)
           
-class DetailsInfoHandler(tornado.web.RequestHandler):
-    """ /article/$category/$id
+class ParttimeJobHandler(tornado.web.RequestHandler):
+    """ /article/ParttimeJob/$id
     """
-    def get(self, category, id):
+    def get(self, id):
         rs = redis.Redis(host=REDIS_HOST, port=REDIS_PORT, db=REDIS_DB)
-        url = self.request.uri
-        print url
-        detailsInfo = rs.hgetall("article:"+category+":"+id)
+        detailsInfo = rs.hgetall("article:ParttimeJob:"+id)
+        if detailsInfo is None:
+            self.write(u"您请求的页面不存在")
+        else:
+            self.render("post.html", job = detailsInfo)
+
+class JobInfoHandler(tornado.web.RequestHandler):
+    """ /article/JobInfo/$id
+    """
+    def get(self, id):
+        rs = redis.Redis(host=REDIS_HOST, port=REDIS_PORT, db=REDIS_DB)
+        detailsInfo = rs.hgetall("article:JobInfo:"+id)
         if detailsInfo is None:
             self.write(u"您请求的页面不存在")
         else:
@@ -53,7 +62,7 @@ class DetailsInfoHandler(tornado.web.RequestHandler):
 class IndexHandler(tornado.web.RequestHandler):
     """ ajax index 
     """
-    def get(self):
+    def get(self, category, id):
         rs = redis.Redis(host=REDIS_HOST, port=REDIS_PORT, db=REDIS_DB)
         category = self.get_argument("category", None)
         page = self.get_argument("page", None)
@@ -79,7 +88,8 @@ def main():
     application = tornado.web.Application(
             handlers=[
                 (r"/", MainHandler),
-                (r"/article/(\w)+/(\d+)", DetailsInfoHandler),
+                (r"/article/ParttimeJob/(\d+)", ParttimeJobHandler),
+                (r"/article/JobInfo/(\d+)", JobInfoHandler),
                 (r"/index", IndexHandler),],
             template_path=os.path.join(os.path.dirname(__file__), "templates"),
             static_path=os.path.join(os.path.dirname(__file__), "static"),
