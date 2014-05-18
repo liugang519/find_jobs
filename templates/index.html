@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="utf-8">
-    <title>{{ page_title }}</title>
+    <title>Find Jobs</title>
     <!-- Bootstrap core CSS -->
     <link href="{{ static_url('css/bootstrap.css') }}" rel="stylesheet" type="text/css">
     <link href="{{ static_url('css/custom.css') }}" rel="stylesheet" type="text/css">
@@ -17,7 +17,6 @@
         <hr class="featurette-divider">
         <div class="row">
             <div class="col-md-3">
-
                 <div id="search-panel">
                     <div class="input-group">
                         <input type="text" class="form-control">
@@ -48,17 +47,16 @@
                 </div>
             </div>
 
-            <div class="col-md-9" id="article-list">
+            <div class="col-md-9">
                 <div class="row">
-                    <div class="tab-content">
-                        <div class="tab-pane fade in active" id="intern">
+                    <div class="tab-content" id="article_list">
+                        <div class="tab-pane fade in active" id="ParttimeJob">
                             <div class="list-group">
-
                                 <li class="list-group-item">
                                     <span>主题</span>
                                     <span class="post-time">时间</span>
                                 </li>
-                                {% for job in jobs_list %}
+                                {% for job in parttimejob_list %}
                                 <a href="{{ '/article/'+job['category']+'/'+job['id'] }}" class="list-group-item">
                                     <span>{{ job['title'] }}</span>
                                     <span class="post-time">{{ job['time'] }}</span>
@@ -66,7 +64,19 @@
                                 {% end %}
                             </div>
                         </div>
-                        <div class="tab-pane fade" id="employee">
+                        <div class="tab-pane fade" id="JobInfo">
+                             <div class="list-group">
+                                <li class="list-group-item">
+                                    <span>主题</span>
+                                    <span class="post-time">时间</span>
+                                </li>
+                                {% for job in jobinfo_list %}
+                                <a href="{{ '/article/'+job['category']+'/'+job['id'] }}" class="list-group-item">
+                                    <span>{{ job['title'] }}</span>
+                                    <span class="post-time">{{ job['time'] }}</span>
+                                </a>
+                                {% end %}
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -74,9 +84,9 @@
                     <div class="col-md-4"></div>
                     <div class="col-md-4">
                         <ul class="pager">
-                            <li id="page_up"><a href="{{ url_pre }}">上一页</a>
+                            <li id="page_up"><a href="">上一页</a>
                             </li>
-                            <li id="page_down"><a href="{{ url_next }}">下一页</a>
+                            <li id="page_down"><a href="">下一页</a>
                             </li>
                         </ul>
                     </div>
@@ -93,7 +103,7 @@
     <!-- Placed at the end of the document so the pages load faster -->
     <script src="{{ static_url('js/jquery-1.11.0.js') }}"></script>
     <script src="{{ static_url('js/bootstrap.js') }}"></script>
-    <script src="{{ static_url('js/custom.js') }}"></script>
+    <script src="{{ static_url('js/index.js') }}"></script>
 </body>
 
 </html>

@@ -43,6 +43,7 @@ class DetailsInfoHandler(tornado.web.RequestHandler):
     def get(self, category, id):
         rs = redis.Redis(host=REDIS_HOST, port=REDIS_PORT, db=REDIS_DB)
         url = self.request.uri
+        print url
         detailsInfo = rs.hgetall("article:"+category+":"+id)
         if detailsInfo is None:
             self.write(u"您请求的页面不存在")
