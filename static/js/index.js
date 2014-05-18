@@ -50,7 +50,11 @@ var CookieUtil = {
 };
 
 function delete_useless_title(obj_title) {
-    obj_title.text(obj_title.text().slice(3));
+    var index = obj_title.text().indexOf("主题:");
+    if (index != -1) {
+        var new_title = obj_title.text().slice(3);
+        obj_title.text(new_title);
+    }
 } // delete "主题：" in title
 
 function delete_home_list_title(obj_list) {
@@ -78,6 +82,13 @@ function set_timer(obj_timer) {
 
 function set_weather(obj_weather) {
 
+    function check_weather_cookie(data) {
+        // body...
+        if (data == null) {
+
+        }
+    }
+
     var show_temperature, show_word;
     var weather_info = CookieUtil.get("weather");
     console.log(weather_info);
@@ -102,33 +113,66 @@ function set_weather(obj_weather) {
     }
 }
 
-function setRequest() {
-
-}
-
 $(document).ready(function() {
     $("#tab_intern").addClass("active");
     delete_home_list_title($("div.list-group"));
     set_timer($("p#timer"));
     set_weather($("p#weather"));
 
-    var current_page = 1;
+    var current_page = new Object();
+    current_page.ParttimeJob = 1;
+    current_page.JobInfo = 1;
+
     $("ul.pager").click(function(event) {
         // body...
         event.preventDefault();
-        console.log(event.target);
-        var group_category;
-        var $group = $("#article_list").children();
-        current_page += 1;
+        var li_id = $(event.target).parent().get(0).id,
+            group_category,
+            temp_page = current_page,
+            $target_list,
+            $group = $("#article_list").children();
+
         for (var i = 0; i < $group.length; i++) {
             if ($group.eq(i).hasClass("active") === true) {
+                $target_list = $group.eq(i).children().children();
                 group_category = $group[i].id;
+                break;
             }
         }
-        console.log(current_page+", "+group_category);
-        $.getJSON("/index", {category: group_category, page: current_page}, function (data) {
+        if (li_id == "page_up") {
+            temp_page[group_category] -= 1;
+        } else if (li_id == "page_down") {
+            temp_page[group_category] += 1;
+        } else {
+            console.log("cannot find page up/down");
+            return false;
+        }
+
+        console.log(temp_page[group_category] + ", " + group_category);
+        $.getJSON("/index", {
+                category: group_category,
+                page: temp_page[group_category]
+            },
+            function(data) {
+                // body...
+                console.log(data);
+                $target_list.each(function (index) {
+                    // body...
+                    if (index > 0) {
+                        var element = data.list[index-1],
+                            url = "/article/"+element.category+"/"+element.id;
+                        $(this).attr("href", url);
+                        $(this).children("span").eq(0).text(element.title);
+                        $(this).children("span").eq(1).text(element.time);
+                    }
+                });
+                delete_home_list_title($("div.list-group"));
+                current_page = temp_page;
+                $("#page_current>a").text(current_page[group_category]);
+
+            }).fail(function() {
             // body...
-            console.log(data);
+            alert("ajax failed");
         });
 
     });

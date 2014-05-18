@@ -68,3 +68,6 @@ div.list-group > li
 
     color: #06c;
 }
+#page_current > a {
+    cursor: default;
+}
