@@ -62,7 +62,7 @@ class JobInfoHandler(tornado.web.RequestHandler):
 class IndexHandler(tornado.web.RequestHandler):
     """ ajax index 
     """
-    def get(self, category, id):
+    def get(self):
         rs = redis.Redis(host=REDIS_HOST, port=REDIS_PORT, db=REDIS_DB)
         category = self.get_argument("category", None)
         page = self.get_argument("page", None)
@@ -70,6 +70,8 @@ class IndexHandler(tornado.web.RequestHandler):
         if category is None or page is None:
             self.write({"status":"error"})
         else:
+            print "category", category
+            print "page", page
             page = int(page)
             id_list = rs.zrevrange("index:time:sset:"+category, 1, -1)
             if len(id_list) <= (page-1)*INDEX_NUMBER:
@@ -81,7 +83,9 @@ class IndexHandler(tornado.web.RequestHandler):
                     details_list.append(details)
                     if len(details_list) == INDEX_NUMBER:
                         break
-                self.write(details_list)
+                response = {}
+                response["list"] = details_list
+                self.write(response)
 
 def main():
     tornado.options.parse_command_line()
