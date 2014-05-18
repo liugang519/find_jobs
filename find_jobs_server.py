@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-#coding:utf-8
+#coding=utf-8
 
 import os.path
 
@@ -78,7 +78,8 @@ class IndexHandler(tornado.web.RequestHandler):
                 self.write({"status":"error"})
             else:
                 details_list = []
-                for i in xrange((page-1)*INDEX_NUMBER):
+                for i in xrange((page-1)*INDEX_NUMBER, len(id_list)):
+                    print i
                     details = rs.hgetall("article:"+category+":"+id_list[i])
                     details_list.append(details)
                     if len(details_list) == INDEX_NUMBER:
