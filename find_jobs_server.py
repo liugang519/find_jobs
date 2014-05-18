@@ -62,8 +62,7 @@ def main():
                 (r"/article/ParttimeJob/(\d+)", ParttimeJobHandler),],
             template_path=os.path.join(os.path.dirname(__file__), "templates"),
             static_path=os.path.join(os.path.dirname(__file__), "static"),
-            ui_modules={"Header": HeaderModule,
-                        "Footer": FooterModule},
+            ui_modules=ui_module_components,
             debug=True,
             )
 
