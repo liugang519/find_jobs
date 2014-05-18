@@ -4,6 +4,7 @@
 import time
 import re
 import hashlib
+import sys
 
 import bs4
 import requests
@@ -13,6 +14,8 @@ import redis
 from spider_conf import *
 
 def m_byr_page_parser(url):
+    """ get infomation from article page
+    """
     r = requests.get(url)
     soup = BeautifulSoup(r.text)
     soup_info = soup.find("ul", "list sec")
@@ -36,6 +39,8 @@ def m_byr_page_parser(url):
     return info_dict
 
 def m_byr_index_parser(url):
+    """get article url from index page
+    """
     r = requests.get(url)
     soup = BeautifulSoup(r.text)
     soup_index_list = soup.find("ul", "list sec")
@@ -45,14 +50,19 @@ def m_byr_index_parser(url):
         url_list.append(a["href"])
     return url_list
 
-def crawler(host="http://m.byr.cn",href="/board/ParttimeJob",first=False):
+def crawler(host=HOST,href=HREF,first=FIRST):
     if first:
         pages = FIRST_PAGES
     else:
         pages = UPDATE_PAGES
     rs = redis.Redis(host=REDIS_HOST, port=REDIS_PORT, db=REDIS_DB)
+    # init current keywords
+    
+    for wd in KEY_WORDS:
+        rs.sadd("keyword:set", wd)
+
     while(True):
-        for page in xrange(pages):
+        for page in xrange(1,pages+1):
             index_url = host+href+"?p="+str(page)
             print "Parsing Index:",index_url
             try:
@@ -85,9 +95,19 @@ def crawler(host="http://m.byr.cn",href="/board/ParttimeJob",first=False):
                         else:
                             print "HAVED"
                     else:
+                        #article:$category:id
                         rs.hmset("article:"+info_dict["category"]+":"+info_dict["id"], info_dict)
+                        #article:$category:id:set
                         rs.sadd("article:"+info_dict["category"]+":id:set", info_dict["id"])
-                        rs.sadd("article:"+info_dict["category"]+":title:set", info_dict["title"])
+                        #index:time:sset:$category
+                        article_time = time.mktime(time.strptime(info_dict["time"],"%Y-%m-%d %H:%M:%S"))
+                        rs.zadd("index:time:sset:"+info_dict["category"], info_dict["id"], article_time)
+                        #reverse:index:$keyword:id:set
+                        keywords = rs.smembers("keyword:set")
+                        for wd in keywords:
+                            wd = wd.decode("utf-8")
+                            if wd in info_dict["title"]:
+                                rs.sadd("reverse:index:"+wd+":id:set", info_dict["id"])
                         print "ADD"
                 except Exception, e:
                     print "REDIS ERROR"
@@ -114,7 +134,10 @@ def test():
 #    crawler()
 
 def main():
-    crawler(host=HOST, href=HREF, first=FIRST)
+    if len(sys.argv) > 1:
+        crawler(href=sys.argv[1])
+    else:
+        crawler()
 
 if __name__ == "__main__":
     main()
