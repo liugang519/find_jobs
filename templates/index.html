@@ -57,7 +57,7 @@
                                     <span class="post-time">时间</span>
                                 </li>
                                 {% for job in parttimejob_list %}
-                                <a href="{{ '/article/'+job['category']+'/'+job['id'] }}" class="list-group-item">
+                                <a href="{{ '/article/'+job['category']+'/'+job['id'] }}" class="list-group-item" target="_blank">
                                     <span>{{ job['title'] }}</span>
                                     <span class="post-time">{{ job['time'] }}</span>
                                 </a>
@@ -71,7 +71,7 @@
                                     <span class="post-time">时间</span>
                                 </li>
                                 {% for job in jobinfo_list %}
-                                <a href="{{ '/article/'+job['category']+'/'+job['id'] }}" class="list-group-item">
+                                <a href="{{ '/article/'+job['category']+'/'+job['id'] }}" class="list-group-item" target="_blank">
                                     <span>{{ job['title'] }}</span>
                                     <span class="post-time">{{ job['time'] }}</span>
                                 </a>
