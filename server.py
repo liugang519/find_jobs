@@ -86,7 +86,7 @@ class IndexHandler(tornado.web.RequestHandler):
 #            print "page", page
             page = int(page)
             id_list = rs.zrevrange("index:time:sset:"+category, 1, -1)
-            if len(id_list) <= (page-1)*INDEX_NUMBER:
+            if len(id_list) <= (page-1)*INDEX_NUMBER or page < 1:
                 self.write({"status":"error"})
             else:
                 details_list = []
@@ -98,6 +98,7 @@ class IndexHandler(tornado.web.RequestHandler):
                         break
                 response = {}
                 response["list"] = details_list
+                response["status"] = "ok"
                 self.write(response)
 
 def main():
