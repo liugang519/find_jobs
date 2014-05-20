@@ -16,11 +16,23 @@ from ui_modules import *
 
 define("port", default=8888, help="run on the given port", type=int)
 
+class Application(tornado.web.Application):
+    def __init__(self):
+        handlers=[(r"/", MainHandler),
+        (r"/article/ParttimeJob/(\d+)", ParttimeJobHandler),
+        (r"/article/JobInfo/(\d+)", JobInfoHandler),
+        (r"/index", IndexHandler)]
+        self.rs = redis.Redis(host=REDIS_HOST, port=REDIS_PORT, db=REDIS_DB)
+        tornado.web.Application.__init__(self, handlers,
+            template_path=os.path.join(os.path.dirname(__file__), "templates"),
+            static_path=os.path.join(os.path.dirname(__file__), "static"),
+            ui_modules=ui_module_components,
+            debug=True)
 class MainHandler(tornado.web.RequestHandler):
     """ the index.html
     """
     def get(self):
-        rs = redis.Redis(host=REDIS_HOST, port=REDIS_PORT, db=REDIS_DB)
+        rs = self.application.rs
         jobinfo_id_list = rs.zrevrange("index:time:sset:JobInfo", 1, -1)
         parttimejob_id_list = rs.zrevrange("index:time:sset:ParttimeJob", 1, -1)
         jobinfo_list = []
@@ -41,7 +53,7 @@ class ParttimeJobHandler(tornado.web.RequestHandler):
     """ /article/ParttimeJob/$id
     """
     def get(self, id):
-        rs = redis.Redis(host=REDIS_HOST, port=REDIS_PORT, db=REDIS_DB)
+        rs = self.application.rs
         detailsInfo = rs.hgetall("article:ParttimeJob:"+id)
         if detailsInfo is None:
             self.write(u"您请求的页面不存在")
@@ -52,7 +64,7 @@ class JobInfoHandler(tornado.web.RequestHandler):
     """ /article/JobInfo/$id
     """
     def get(self, id):
-        rs = redis.Redis(host=REDIS_HOST, port=REDIS_PORT, db=REDIS_DB)
+        rs = self.application.rs
         detailsInfo = rs.hgetall("article:JobInfo:"+id)
         if detailsInfo is None:
             self.write(u"您请求的页面不存在")
@@ -63,7 +75,7 @@ class IndexHandler(tornado.web.RequestHandler):
     """ ajax index 
     """
     def get(self):
-        rs = redis.Redis(host=REDIS_HOST, port=REDIS_PORT, db=REDIS_DB)
+        rs = self.application.rs
         category = self.get_argument("category", None)
         page = self.get_argument("page", None)
 
@@ -90,19 +102,7 @@ class IndexHandler(tornado.web.RequestHandler):
 
 def main():
     tornado.options.parse_command_line()
-    application = tornado.web.Application(
-            handlers=[
-                (r"/", MainHandler),
-                (r"/article/ParttimeJob/(\d+)", ParttimeJobHandler),
-                (r"/article/JobInfo/(\d+)", JobInfoHandler),
-                (r"/index", IndexHandler),],
-            template_path=os.path.join(os.path.dirname(__file__), "templates"),
-            static_path=os.path.join(os.path.dirname(__file__), "static"),
-            ui_modules=ui_module_components,
-            debug=True,
-            )
-
-    http_server = tornado.httpserver.HTTPServer(application)
+    http_server = tornado.httpserver.HTTPServer(Application())
     http_server.listen(options.port)
     tornado.ioloop.IOLoop.instance().start()
 
