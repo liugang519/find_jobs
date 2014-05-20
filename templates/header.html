@@ -5,13 +5,26 @@
                 <img src="{{ static_url('img/logo.png') }}" class="img-responsive center-block" alt="Responsive image">
             </a>
         </div>
-        <div class="col-md-9 nav-bottom-child">
+        <div class="col-md-6 nav-bottom-child">
             <ul class="nav nav-tabs" id="infoTab">
                 <li id="tab_intern"><a href="#ParttimeJob" data-toggle="tab">实习信息</a>
                 </li>
                 <li id="tab_employee"><a href="#JobInfo" data-toggle="tab">校招信息</a>
                 </li>
+                <li id="tab_search"><a href="" data-toggle="tab">搜索结果</a>
+                </li>
             </ul>
+        </div>
+        <div class="col-md-3">
+            <div class="input-group search">
+                <input type="text" class="form-control">
+                <span class="input-group-btn">
+                    <button class="btn btn-default" type="button">
+                        <span class="glyphicon glyphicon-search"></span>
+                    </button>
+                </span>
+            </div>
+            <!-- /input-group -->
         </div>
     </div>
 </div>

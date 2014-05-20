@@ -17,8 +17,7 @@ a
     font-size: 18px;
     font-weight: bold;
     line-height: 1.5em;
-
-    width: 30%;
+    width: 95%;
 }
 .navbar-inverse
 {
@@ -28,6 +27,10 @@ a
 {
     position: relative;
     top: 80px;
+}
+.search {
+    position: relative;
+    top: 90px;
 }
 div#search-panel
 {
@@ -68,6 +71,7 @@ div.list-group > li
 
     color: #06c;
 }
-#page_current > a {
+#page_current > a
+{
     cursor: default;
 }

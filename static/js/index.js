@@ -128,9 +128,10 @@ $(document).ready(function() {
         event.preventDefault();
         var li_id = $(event.target).parent().get(0).id,
             group_category,
-            temp_page = current_page,
+            temp_page = new Object(),
             $target_list,
             $group = $("#article_list").children();
+        $.extend(temp_page, current_page);
 
         for (var i = 0; i < $group.length; i++) {
             if ($group.eq(i).hasClass("active") === true) {
@@ -156,24 +157,31 @@ $(document).ready(function() {
             function(data) {
                 // body...
                 console.log(data);
-                $target_list.each(function (index) {
-                    // body...
-                    if (index > 0) {
-                        var element = data.list[index-1],
-                            url = "/article/"+element.category+"/"+element.id;
-                        $(this).attr("href", url);
-                        $(this).children("span").eq(0).text(element.title);
-                        $(this).children("span").eq(1).text(element.time);
-                    }
-                });
-                delete_home_list_title($("div.list-group"));
-                current_page = temp_page;
-                $("#page_current>a").text(current_page[group_category]);
-
+                if (data.status != "ok") {
+                    console.log("failed");
+                    return false;
+                } else {
+                    $target_list.each(function(index) {
+                        // body...
+                        if (index > 0) {
+                            var element = data.list[index - 1],
+                                url = "/article/" + element.category + "/" + element.id;
+                            $(this).attr("href", url);
+                            $(this).children("span").eq(0).text(element.title);
+                            $(this).children("span").eq(1).text(element.time);
+                        }
+                    });
+                    delete_home_list_title($("div.list-group"));
+                    $.extend(current_page, temp_page);
+                    $("#page_current>a").text(current_page[group_category]);
+                }
             }).fail(function() {
             // body...
             alert("ajax failed");
         });
-
+    });
+    $('a[data-toggle="tab"]').on('shown.bs.tab', function(event) {
+        var id = $(event.target).attr("href").slice(1);
+        $("#page_current>a").text(current_page[id]);
     });
 });
