@@ -2,6 +2,7 @@
 #coding=utf-8
 
 import os.path
+import time
 
 import tornado.httpserver
 import tornado.ioloop
@@ -70,7 +71,35 @@ class JobInfoHandler(tornado.web.RequestHandler):
             self.write(u"您请求的页面不存在")
         else:
             self.render("post.html", job = detailsInfo)
-
+class SearchHandler(tornado.web.RequestHandler):
+    """/search/
+    """
+    def get(self):
+        word = self.get_argument("word", None)
+        response = {}
+        if word is None :
+            response["status"] = "error"
+            self.write(response)
+        else:
+            rs = self.application.rs
+            details_list = []
+            jobinfo_id_list = rs.zrevrange("index:time:sset:JobInfo", 1, -1)
+            parttimejob_id_list = rs.zrevrange("index:time:sset:ParttimeJob", 1, -1)
+            for id in jobinfo_id_list:
+                cur_info = rs.hgetall("article:JobInfo:"+id)
+                if word in cur_info["title"]:
+                    details_list.append(cur_info)
+            for id in parttimejob_id_list:
+                cur_info = rs.hgetall("article:ParttimeJob:"+id)
+                if word in cur_info["title"]:
+                    details_list.append(cur_info)
+            response["status"] = "ok"
+            
+            res_list = sorted(details_list, lambda x:time.mktime(time.strptime(x["time"],"%Y-%m-%d %H:%M:%S"), reverse=True)
+            
+            response["list"] = res_list
+            self.write(response)
+                
 class IndexHandler(tornado.web.RequestHandler):
     """ ajax index 
     """
