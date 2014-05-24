@@ -77,6 +77,7 @@ class SearchHandler(tornado.web.RequestHandler):
     """
     def get(self):
         word = self.get_argument("word", None)
+        page = self.get_argument("page", None)
         response = {}
         if word is None :
             response["status"] = "error"
@@ -97,9 +98,18 @@ class SearchHandler(tornado.web.RequestHandler):
                     details_list.append(cur_info)
             response["status"] = "ok"
             
-            res_list = sorted(details_list, key=lambda x:time.mktime(time.strptime(x["time"],"%Y-%m-%d %H:%M:%S")), reverse=True)
-            
+            ordered_list = sorted(details_list, key=lambda x:time.mktime(time.strptime(x["time"],"%Y-%m-%d %H:%M:%S")), reverse=True)
+            res_list = []
+            start = 0
+            if page is not None:
+                start = (int(page)-1)*INDEX_NUMBER
+            for i in xrange(start, len(ordered_list)):
+                res_list.append(ordered_list[i])
+                if len(res_list) == SEARCH_NUMBER:
+                    break;
+                    
             response["list"] = res_list
+            response["count"] = len(ordered_list)
             self.write(response)
                 
 class IndexHandler(tornado.web.RequestHandler):
