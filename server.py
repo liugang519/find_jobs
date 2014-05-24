@@ -83,16 +83,17 @@ class SearchHandler(tornado.web.RequestHandler):
             self.write(response)
         else:
             rs = self.application.rs
+            print type(word)
             details_list = []
             jobinfo_id_list = rs.zrevrange("index:time:sset:JobInfo", 1, -1)
             parttimejob_id_list = rs.zrevrange("index:time:sset:ParttimeJob", 1, -1)
             for id in jobinfo_id_list:
                 cur_info = rs.hgetall("article:JobInfo:"+id)
-                if word in cur_info["title"]:
+                if word in cur_info["title"].decode("utf-8"):
                     details_list.append(cur_info)
             for id in parttimejob_id_list:
                 cur_info = rs.hgetall("article:ParttimeJob:"+id)
-                if word in cur_info["title"]:
+                if word in cur_info["title"].decode("utf-8"):
                     details_list.append(cur_info)
             response["status"] = "ok"
             
