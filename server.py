@@ -22,7 +22,8 @@ class Application(tornado.web.Application):
         handlers=[(r"/", MainHandler),
         (r"/article/ParttimeJob/(\d+)", ParttimeJobHandler),
         (r"/article/JobInfo/(\d+)", JobInfoHandler),
-        (r"/index", IndexHandler)]
+        (r"/index", IndexHandler),
+        (r"/search", SearchHandler),]
         self.rs = redis.Redis(host=REDIS_HOST, port=REDIS_PORT, db=REDIS_DB)
         tornado.web.Application.__init__(self, handlers,
             template_path=os.path.join(os.path.dirname(__file__), "templates"),
@@ -72,7 +73,7 @@ class JobInfoHandler(tornado.web.RequestHandler):
         else:
             self.render("post.html", job = detailsInfo)
 class SearchHandler(tornado.web.RequestHandler):
-    """/search/
+    """/search
     """
     def get(self):
         word = self.get_argument("word", None)
@@ -95,7 +96,7 @@ class SearchHandler(tornado.web.RequestHandler):
                     details_list.append(cur_info)
             response["status"] = "ok"
             
-            res_list = sorted(details_list, lambda x:time.mktime(time.strptime(x["time"],"%Y-%m-%d %H:%M:%S"), reverse=True)
+            res_list = sorted(details_list, key=lambda x:time.mktime(time.strptime(x["time"],"%Y-%m-%d %H:%M:%S")), reverse=True)
             
             response["list"] = res_list
             self.write(response)
