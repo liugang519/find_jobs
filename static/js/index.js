@@ -87,44 +87,50 @@ function set_timer(obj_timer) {
 
 function set_weather(obj_weather) {
 
-    var weather_flag;
-    var weather_info = localStorage.getItem("weather");
-    if (weather_info == null)
-        var weather_info_list = weather_info.split("&");
-    var nowDate = new Date();
+    var flag = 0,
+        weather_info_list,
+        weather_info = localStorage.getItem("weather"),
+        now_hour = (new Date()).getTime(),
+        update_time;
 
-    if (weather_info == null || weather_info_list[2]) {
-        console.log("weather null");
+    if (weather_info != null) {
+        weather_info_list = weather_info.split("&");
+        update_time = now_hour - weather_info_list[2];
+        console.log("update_time: ", update_time, hour_1);
+    }
+
+    if (weather_info == null || update_time > hour_1) {
+        weather_info = "";
         $.getJSON('http://api.openweathermap.org/data/2.5/weather?q=beijing,china&lang=zh_cn', function(data) {
             //处理data数据
             var kelvin_tem = 273.15; //Temperature in Kelvin
             var temperature = data.main.temp - kelvin_tem;
-            var outDate = new Date();
-            var overdue_hour = (outDate.getHours() + 1) % 24;
             weather_info = temperature.toFixed(0).toString() +
                 "&" +
                 data.weather[0].description +
                 "&" +
-                overdue_hour.toString();
+                now_hour.toString();
             localStorage.setItem("weather", weather_info);
+            console.log("ajax done");
+        });
+    }
+
+    setTimeout(function checkWeather() {
+        // body...
+        if (weather_info != "") {
             weather_info_list = weather_info.split("&");
             console.log(weather_info_list);
-            show_temperature = weather_info_list[0];
-            show_word = weather_info_list[1];
-            obj_weather.text("今日：" + show_temperature + "°C | " + show_word);
-        });
-    } else {
-        weather_info_list = weather_info.split("&");
-        console.log(weather_info_list);
-        show_temperature = weather_info_list[0];
-        show_word = weather_info_list[1];
-        obj_weather.text("今日：" + show_temperature + "°C | " + show_word);
-    }
+            obj_weather.text("今日：" + weather_info_list[0] + "°C | " + weather_info_list[1]);
+        } else {
+            setTimeout(checkWeather, 500);
+        }
+    }, 500);
     setTimeout(set_weather, hour_1, obj_weather);
 }
 
 function pageNumberListener() {
     // body...
+    $("#page_down").removeClass("disabled");
     if ($("#page_current a").text() == "1") {
         $("#page_up").addClass("disabled");
     } else {
@@ -160,16 +166,21 @@ function pageAjax(event) {
 
     console.log(temp_page[group_category] + ", " + group_category);
     if (group_category == "SearchResult") {
-        var $show_list = $("#SearchResult a"),
+        var i,
+            $show_list = $("#SearchResult a"),
             begin_index = max_index * (temp_page[group_category] - 1);
         console.log("begin_index: ", begin_index);
         $show_list.hide();
-        for (var i = begin_index; i < begin_index + max_index; i++) {
+        for (i = begin_index; i < begin_index + max_index && i < $show_list.length; i++) {
             $show_list.eq(i).show();
+            console.log($show_list.eq(i));
         }
         $.extend(current_page, temp_page);
         $("#page_current>a").text(current_page[group_category]);
         pageNumberListener();
+        if (i >= $show_list.length) {
+            $("#page_down").addClass("disabled");
+        }
 
     } else {
         $.getJSON("/index", {
@@ -215,49 +226,50 @@ function searchAjax() {
     if (keyword != "") {
         console.log(keyword);
         $.getJSON("/search", {
-            word: keyword
-        }, function(data) {
-            // body...
-            console.log(data);
-            if (data.status != "ok") {
-                console.log("failed");
-                return false;
-            } else {
-                if ($("#SearchResult a").length != 0) {
-                    $("#SearchResult a").remove();
-                }
-                var list_html = "";
-                for (var i = 0; i < data.list.length; i++) {
-                    var a_html = '<a href="/article/' +
-                        data.list[i].category +
-                        '/' +
-                        data.list[i].id +
-                        '"' +
-                        ' class="list-group-item" target="_blank">' +
-                        '<span>' +
-                        data.list[i].title +
-                        '</span>' +
-                        '<span class="post-time">' +
-                        data.list[i].time +
-                        '</span>' +
-                        '</a>';
-                    list_html += a_html;
-                }
-                $("#SearchResult li").after(list_html);
-                $("#tab_search").show();
-                $('#tab_search a[href="#SearchResult"]').tab("show");
+                word: keyword
+            },
+            function(data) {
+                // body...
+                console.log(data);
+                if (data.status != "ok") {
+                    console.log("failed");
+                    return false;
+                } else {
+                    if ($("#SearchResult a").length != 0) {
+                        $("#SearchResult a").remove();
+                    }
+                    var list_html = "";
+                    for (var i = 0; i < data.list.length; i++) {
+                        var a_html = '<a href="/article/' +
+                            data.list[i].category +
+                            '/' +
+                            data.list[i].id +
+                            '"' +
+                            ' class="list-group-item" target="_blank">' +
+                            '<span>' +
+                            data.list[i].title +
+                            '</span>' +
+                            '<span class="post-time">' +
+                            data.list[i].time +
+                            '</span>' +
+                            '</a>';
+                        list_html += a_html;
+                    }
+                    $("#SearchResult li").after(list_html);
+                    $("#tab_search").show();
+                    $('#tab_search a[href="#SearchResult"]').tab("show");
 
-                var $show_list = $("#SearchResult a");
-                for (var i = max_index; i < $show_list.length; i++) {
-                    $show_list.eq(i).hide();
-                }
+                    var $show_list = $("#SearchResult a");
+                    for (var i = max_index; i < $show_list.length; i++) {
+                        $show_list.eq(i).hide();
+                    }
 
-                delete_home_list_title($("div.list-group"));
-                current_page.SearchResult = 1;
-                $("#page_current>a").text(current_page[SearchResult]);
-                pageNumberListener();
-            }
-        });
+                    delete_home_list_title($("div.list-group"));
+                    current_page.SearchResult = 1;
+                    $("#page_current>a").text(current_page.SearchResult);
+                    pageNumberListener();
+                }
+            });
     } else {
         alert("请输入有效的关键字！");
         return false;
@@ -268,7 +280,8 @@ $(document).ready(function() {
     $("#tab_intern").addClass("active");
     delete_home_list_title($("div.list-group"));
     set_timer($("p#timer"));
-    // set_weather($("p#weather"));
+    set_weather($("p#weather"));
+
     // tab点击的时候，在当前页面显示当前分类的page number
     $('a[data-toggle="tab"]').on('shown.bs.tab', function(event) {
         var id = $(event.target).attr("href").slice(1);
@@ -278,7 +291,6 @@ $(document).ready(function() {
 
     $("#tab_search").hide();
     $("#search").click(searchAjax);
-
     $("ul.pager").click(pageAjax);
 
     pageNumberListener();
