@@ -85,30 +85,25 @@ class SearchHandler(tornado.web.RequestHandler):
         else:
             rs = self.application.rs
             print type(word)
+            print word
             details_list = []
             jobinfo_id_list = rs.zrevrange("index:time:sset:JobInfo", 1, -1)
             parttimejob_id_list = rs.zrevrange("index:time:sset:ParttimeJob", 1, -1)
             for id in jobinfo_id_list:
                 cur_info = rs.hgetall("article:JobInfo:"+id)
                 if word in cur_info["title"].decode("utf-8"):
+                    del cur_info["content"]
                     details_list.append(cur_info)
             for id in parttimejob_id_list:
                 cur_info = rs.hgetall("article:ParttimeJob:"+id)
                 if word in cur_info["title"].decode("utf-8"):
+                    del cur_info["content"]
                     details_list.append(cur_info)
             response["status"] = "ok"
             
             ordered_list = sorted(details_list, key=lambda x:time.mktime(time.strptime(x["time"],"%Y-%m-%d %H:%M:%S")), reverse=True)
-            res_list = []
-            start = 0
-            if page is not None:
-                start = (int(page)-1)*INDEX_NUMBER
-            for i in xrange(start, len(ordered_list)):
-                res_list.append(ordered_list[i])
-                if len(res_list) == SEARCH_NUMBER:
-                    break;
                     
-            response["list"] = res_list
+            response["list"] = ordered_list
             response["count"] = len(ordered_list)
             self.write(response)
                 
